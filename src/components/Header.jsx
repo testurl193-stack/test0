@@ -32,7 +32,8 @@ export const Header = ({ onOpenSearch, onToggleMobileMenu }) => {
       <div className="container header__inner">
         <Link to="/" className="header__brand">
           <span className="header__logo">
-            <span className="header__logo-text">هدية</span>
+            <img src="/images/logo.png" alt="سعودي" className="header__logo-img" onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} />
+            <span className="header__logo-text" style={{ display: 'none' }}>سعودي</span>
           </span>
         </Link>
 

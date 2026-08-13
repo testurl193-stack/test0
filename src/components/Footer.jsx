@@ -8,10 +8,10 @@ export const Footer = () => {
         <div className="footer__grid">
           <div>
             <Link to="/" className="footer__brand-logo">
-              هدية
+              سعودي
             </Link>
             <p className="footer__brand-text">
-              متجر هدية متخصص في توفير أرقى العبايات، النقاب، الخمار ومكملات الحجاب بخامات فاخرة عالية الجودة وتصاميم عصرية يناسب أسلوبكِ الراقي.
+              متجر سعودي متخصص في توفير أرقى العبايات، النقاب، الخمار ومكملات الحجاب بخامات فاخرة عالية الجودة وتصاميم عصرية يناسب أسلوبكِ الراقي.
             </p>
             <div className="footer__social">
               <a href="#" onClick={(e) => e.preventDefault()} className="footer__social-link" aria-label="إنستجرام">
@@ -47,7 +47,7 @@ export const Footer = () => {
           </div>
 
           <div>
-            <h4 class="footer__title">خدمة العملاء</h4>
+            <h4 className="footer__title">خدمة العملاء</h4>
             <ul className="footer__links">
               <li><a href="#" onClick={(e) => e.preventDefault()}>سياسة الشحن والتوصيل</a></li>
               <li><a href="#" onClick={(e) => e.preventDefault()}>سياسة الاستبدال والاسترجاع</a></li>
@@ -60,13 +60,13 @@ export const Footer = () => {
           <div>
             <h4 className="footer__title">تواصل معنا</h4>
             <div className="footer__contact-item">
-              <span>القاهرة، جمهورية مصر العربية</span>
+              <span>المملكة العربية السعودية</span>
             </div>
             <div className="footer__contact-item">
-              <span dir="ltr">+20 100 123 4567</span>
+              <span dir="ltr">+966 50 000 0000</span>
             </div>
             <div className="footer__contact-item">
-              <span>support@hadiya.com</span>
+              <span>support@saudi-store.com</span>
             </div>
             <div className="footer__contact-item">
               <span>السبت - الخميس: 9:00 ص - 10:00 م</span>

@@ -8,7 +8,7 @@ export const MobileMenuDrawer = ({ isOpen, onClose }) => {
       <div className={`mobile-menu ${isOpen ? 'active' : ''}`} id="mobile-menu">
         <div className="mobile-menu__header">
           <span className="header__logo" style={{ fontSize: '1.5rem' }}>
-            هدية
+            سعودي
           </span>
           <button className="mobile-menu__close" onClick={onClose} aria-label="إغلاق القائمة">
             ✕

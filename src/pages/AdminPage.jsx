@@ -118,7 +118,7 @@ export const AdminPage = () => {
         {/* Admin Sidebar */}
         <aside className="admin-sidebar" style={{ width: '250px', background: '#16161a', borderLeft: '1px solid #27272a', display: 'flex', flexDirection: 'column', padding: '20px 0', flexShrink: 0 }}>
           <div className="admin-sidebar__logo" style={{ padding: '0 24px 20px', fontSize: '1.6rem', fontWeight: 900, color: '#fff', borderBottom: '1px solid #27272a' }}>
-            <span>لوحة تحكم هدية</span>
+            <span>لوحة تحكم سعودي</span>
           </div>
 
           <div className="admin-sidebar__menu" style={{ padding: '20px 12px', flex: 1 }}>
@@ -156,7 +156,7 @@ export const AdminPage = () => {
           <div className="admin-header">
             <div>
               <h1 className="admin-header__title">لوحة التحكم الفعالة</h1>
-              <p style={{ color: '#a1a1aa', fontSize: '0.9rem', margin: '4px 0 0 0' }}>إدارة شاملة ومباشرة لمتجر هدية (React Powered)</p>
+              <p style={{ color: '#a1a1aa', fontSize: '0.9rem', margin: '4px 0 0 0' }}>إدارة شاملة ومباشرة لمتجر سعودي (React Powered)</p>
             </div>
 
             <div className="admin-user-pill">
@@ -322,7 +322,7 @@ export const AdminPage = () => {
                 
                 <div className="admin-form-group">
                   <label>اسم البراند:</label>
-                  <input type="text" className="admin-input" defaultValue="هدية (Hadiya Boutique)" />
+                  <input type="text" className="admin-input" defaultValue="سعودي (Saudi Boutique)" />
                 </div>
 
                 <div className="admin-form-group">
@@ -332,7 +332,7 @@ export const AdminPage = () => {
 
                 <div className="admin-form-group">
                   <label>كود الخصم الفعال:</label>
-                  <input type="text" className="admin-input" defaultValue="HADIYA15" />
+                  <input type="text" className="admin-input" defaultValue="SAUDI15" />
                 </div>
 
                 <button className="admin-btn" style={{ marginTop: '10px' }} onClick={() => showToast('تم حفظ إعدادات المتجر بنجاح!')}>

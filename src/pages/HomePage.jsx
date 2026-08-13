@@ -14,7 +14,7 @@ export const HomePage = () => {
       desc: 'تصاميم راقية تجمع بين البساطة والوقار بأجود الأقمشة الفاخرة التي تمنحكِ راحة وثقة في كل لحظة.',
       btnText: 'تسوقي التشكيلة الآن',
       link: '/shop',
-      image: '/images/hero/hero1.png'
+      image: '/images/banner.png'
     },
     {
       subtitle: 'احتشامك اختيارك',
@@ -22,7 +22,7 @@ export const HomePage = () => {
       desc: 'تشكيلة مميزة من النقاب المائل وبدون اسم المصنوع من أحدث الخامات المريحة للتنفس طوال اليوم.',
       btnText: 'اكتشفي قسم النقاب',
       link: '/shop?category=niqab',
-      image: '/images/hero/hero1.png'
+      image: '/images/banner.png'
     },
     {
       subtitle: 'عروض حصرية',
@@ -30,7 +30,7 @@ export const HomePage = () => {
       desc: 'لا تفوتي فرصة الحصول على أجمل عبايات وخمار الحجاب بأفضل الأسعار لفترة محدودة.',
       btnText: 'تسوقي العروض الآن',
       link: '/shop',
-      image: '/images/hero/hero1.png'
+      image: '/images/banner.png'
     }
   ];
 
@@ -155,7 +155,7 @@ export const HomePage = () => {
         <section className="section categories">
           <div className="section-header">
             <h2>تسوقي حسب الفئة</h2>
-            <p>اكتشفي الأقسام المتنوعة لعلامة هدية وتأنقي بما يناسب ذوقكِ الفريد</p>
+            <p>اكتشفي الأقسام المتنوعة لعلامة سعودي وتأنقي بما يناسب ذوقكِ الفريد</p>
           </div>
 
           <div className="categories__grid">
@@ -243,7 +243,7 @@ export const HomePage = () => {
         {/* Promo Banner */}
         <section className="section">
           <div className="promo-banner">
-            <img src="/images/hero/hero1.png" alt="بانر هدية" className="promo-banner__bg" loading="lazy" />
+            <img src="/images/banner.png" alt="بانر سعودي" className="promo-banner__bg" loading="lazy" />
             <div className="promo-banner__overlay" />
             <div className="promo-banner__content">
               <h2 className="promo-banner__title">احتشامك اختيارك وجمالك</h2>
