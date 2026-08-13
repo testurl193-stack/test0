@@ -9,7 +9,7 @@ export const OrderSuccessPage = () => {
 
   const generateWhatsAppMessage = () => {
     if (!orderData) return '';
-    const text = `مرحباً متجر سعودي 👋
+    const text = `مرحباً متجر سعودي
 أود تأكيد طلبي برقم: ${orderData.orderId}
 الاسم: ${orderData.customer.fullName}
 الهاتف: ${orderData.customer.phone}
@@ -24,12 +24,12 @@ export const OrderSuccessPage = () => {
       <div style={{ maxWidth: '650px', margin: '0 auto', background: '#fff', padding: '40px 30px', borderRadius: '16px', border: '1px solid var(--color-border)', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', textAlign: 'center' }}>
         
         {/* Success Icon */}
-        <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#E8F5E9', color: '#2E7D32', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', margin: '0 auto 20px' }}>
+        <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#E8F5E9', color: '#2E7D32', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.2rem', margin: '0 auto 20px', fontWeight: 'bold' }}>
           ✓
         </div>
 
         <h1 style={{ fontSize: '1.8rem', color: 'var(--color-heading)', fontWeight: 900, marginBottom: '10px' }}>
-          شكراً لثقتكِ بـ متجر سعودي! 🎉
+          شكراً لثقتكِ بـ متجر سعودي
         </h1>
         <p style={{ color: '#555', fontSize: '1.05rem', marginBottom: '25px' }}>
           تم استلام طلبكِ بنجاح وجاري تجهيزه وتسليمه لشركة الشحن.
@@ -66,7 +66,7 @@ export const OrderSuccessPage = () => {
             {orderData.receiptPreview && (
               <div style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px dashed #ccc' }}>
                 <div style={{ fontSize: '0.88rem', fontWeight: 700, marginBottom: '8px', color: '#444' }}>
-                  📸 صورة إيصال التحويل المرفقة:
+                  صورة إيصال التحويل المرفقة:
                 </div>
                 <img
                   src={orderData.receiptPreview}
@@ -87,7 +87,7 @@ export const OrderSuccessPage = () => {
               className="btn btn-secondary btn-lg"
               style={{ background: '#25D366', color: '#fff', border: 'none', gap: '8px' }}
             >
-              💬 إرسال تفاصيل الطلب والإيصال عبر الواتساب فوراً
+              إرسال تفاصيل الطلب والإيصال عبر الواتساب فوراً
             </a>
           )}
 

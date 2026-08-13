@@ -27,6 +27,36 @@ export const CheckoutPage = () => {
 
   const vodafoneNumber = '01040871855';
 
+  const egyptGovernorates = [
+    'بورسعيد',
+    'القاهرة',
+    'الجيزة',
+    'الإسكندرية',
+    'القليوبية',
+    'الدقهلية (المنصورة)',
+    'الشرقية (الزقازيق)',
+    'المنوفية (شبين الكوم)',
+    'الغربية (طنطا)',
+    'البحيرة (دمنهور)',
+    'دمياط',
+    'الإسماعيلية',
+    'السويس',
+    'كفر الشيخ',
+    'الفيوم',
+    'بني سويف',
+    'المنيا',
+    'أسيوط',
+    'سوهاج',
+    'قنا',
+    'الأقصر',
+    'أسوان',
+    'البحر الأحمر (الغردقة)',
+    'الوادي الجديد',
+    'مطروح',
+    'شمال سيناء (العريش)',
+    'جنوب سيناء (شرم الشيخ / الطور)'
+  ];
+
   const handleCopyNumber = () => {
     navigator.clipboard.writeText(vodafoneNumber);
     showToast('تم نسخ رقم فودافون كاش: ' + vodafoneNumber);
@@ -121,19 +151,19 @@ export const CheckoutPage = () => {
         </div>
 
         <h1 style={{ fontSize: '1.8rem', color: 'var(--color-heading)', marginBottom: '30px', fontWeight: 800 }}>
-          🔒 صفحة إتمام الطلب والدفع الآمن
+          صفحة إتمام الطلب والدفع
         </h1>
 
         <form onSubmit={handleSubmitOrder}>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '30px' }} className="checkout-grid">
             
-            {/* Left Column: Customer Info & Payment Methods */}
+            {/* Left Column: Customer Info First, Then Payment Method */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
               
-              {/* Box 1: Customer Details */}
+              {/* Box 1: Customer Details (First) */}
               <div style={{ background: '#fff', padding: '25px', borderRadius: '12px', border: '1px solid var(--color-border)', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
-                <h2 style={{ fontSize: '1.25rem', color: 'var(--color-heading)', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span>📋</span> بيانات المشترية والتوصيل
+                <h2 style={{ fontSize: '1.25rem', color: 'var(--color-heading)', marginBottom: '20px' }}>
+                  1. بيانات المشترية والتوصيل
                 </h2>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
@@ -177,23 +207,17 @@ export const CheckoutPage = () => {
                     />
                   </div>
 
-                  <div>
-                    <label style={{ display: 'block', fontWeight: 700, marginBottom: '6px', fontSize: '0.9rem' }}>المحافظة / المدينة *</label>
+                  <div style={{ gridColumn: 'span 2' }}>
+                    <label style={{ display: 'block', fontWeight: 700, marginBottom: '6px', fontSize: '0.9rem' }}>المحافظة *</label>
                     <select
                       className="admin-input"
                       value={formData.city}
                       onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                       style={{ width: '100%', padding: '12px', border: '1px solid var(--color-border)', borderRadius: '8px', background: '#fff' }}
                     >
-                      <option value="بورسعيد">بورسعيد</option>
-                      <option value="القاهرة">القاهرة</option>
-                      <option value="الجيزة">الجيزة</option>
-                      <option value="الإسكندرية">الإسكندرية</option>
-                      <option value="الإسماعيلية">الإسماعيلية</option>
-                      <option value="السويس">السويس</option>
-                      <option value="الدقهلية">الدقهلية (المنصورة)</option>
-                      <option value="الشرقية">الشرقية (الزقازيق)</option>
-                      <option value="باقي المحافظات">باقي محافظات مصر</option>
+                      {egyptGovernorates.map((gov) => (
+                        <option key={gov} value={gov}>{gov}</option>
+                      ))}
                     </select>
                   </div>
 
@@ -223,10 +247,10 @@ export const CheckoutPage = () => {
                 </div>
               </div>
 
-              {/* Box 2: Payment Method Selection */}
+              {/* Box 2: Payment Method Selection (Second, After Details) */}
               <div style={{ background: '#fff', padding: '25px', borderRadius: '12px', border: '1px solid var(--color-border)', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
-                <h2 style={{ fontSize: '1.25rem', color: 'var(--color-heading)', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span>💳</span> اختر طريقة الدفع المفضلة
+                <h2 style={{ fontSize: '1.25rem', color: 'var(--color-heading)', marginBottom: '20px' }}>
+                  2. اختر طريقة الدفع المفضلة
                 </h2>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
@@ -255,8 +279,8 @@ export const CheckoutPage = () => {
                     />
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontWeight: 800, fontSize: '1.05rem', color: '#D9251D' }}>📱 فودافون كاش (Vodafone Cash)</span>
-                        <span style={{ background: '#FFEBEB', color: '#D9251D', fontSize: '0.75rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px' }}>موصى به</span>
+                        <span style={{ fontWeight: 800, fontSize: '1.05rem', color: '#D9251D' }}>فودافون كاش (Vodafone Cash)</span>
+                        <span style={{ background: '#FFEBEB', color: '#D9251D', fontSize: '0.75rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px' }}>طريقة سريعة ومضمونة</span>
                       </div>
                       <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '4px', marginBottom: 0 }}>
                         تحويل المبلغ مباشرة لرقم فودافون كاش المتجر وإرفاق صورة إيصال التحويل لتأكيد الحجز فوراً.
@@ -279,7 +303,7 @@ export const CheckoutPage = () => {
                               className="btn btn-secondary"
                               style={{ padding: '8px 16px', fontSize: '0.85rem' }}
                             >
-                              📋 نسخ الرقم
+                              نسخ الرقم
                             </button>
                           </div>
 
@@ -289,14 +313,14 @@ export const CheckoutPage = () => {
                               <li>اطلبي كود <code style={{ background: '#eee', padding: '2px 6px', borderRadius: '4px' }}>*9#</code> أو استخدمي تطبيق أنا فودافون.</li>
                               <li>دفع مبلغ: <strong style={{ color: '#D9251D' }}>{totalPrice.toLocaleString('ar-EG')} ج.م</strong> للرقم <strong>01040871855</strong>.</li>
                               <li>خذي سكرين شوت (لقطة شاشة) لرسالة التأكيد أو إيصال التحويل الناجح.</li>
-                              <li>ارفعي صورة الإيصال بالأسفل 👇:</li>
+                              <li>ارفعي صورة الإيصال بالأسفل:</li>
                             </ol>
                           </div>
 
                           {/* Image Upload Input */}
                           <div style={{ marginTop: '15px' }}>
                             <label style={{ display: 'block', fontWeight: 800, marginBottom: '8px', fontSize: '0.9rem', color: '#3D231D' }}>
-                              📸 رفع صورة إيصال التحويل (ضروري لتأكيد الطلب) *
+                              رفع صورة إيصال التحويل (ضروري لتأكيد الطلب) *
                             </label>
                             
                             <input
@@ -330,12 +354,11 @@ export const CheckoutPage = () => {
                                     style={{ maxHeight: '180px', borderRadius: '6px', border: '1px solid #ddd', marginBottom: '10px' }}
                                   />
                                   <div style={{ fontSize: '0.85rem', color: 'var(--color-success)', fontWeight: 700 }}>
-                                    ✅ تم إرفاق الصورة بنجاح! انقري للتغيير
+                                    تم إرفاق الصورة بنجاح. انقري للتغيير
                                   </div>
                                 </div>
                               ) : (
                                 <>
-                                  <div style={{ fontSize: '2rem', marginBottom: '8px' }}>📤</div>
                                   <span style={{ fontWeight: 700, color: 'var(--color-primary)', fontSize: '0.95rem' }}>
                                     اضغطي هنا لاختيار صورة الإيصال من جهازك
                                   </span>
@@ -374,7 +397,7 @@ export const CheckoutPage = () => {
                       style={{ marginTop: '4px', accentColor: 'var(--color-secondary)' }}
                     />
                     <div>
-                      <span style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--color-heading)' }}>💵 الدفع عند الاستلام (Cash On Delivery)</span>
+                      <span style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--color-heading)' }}>الدفع عند الاستلام (Cash On Delivery)</span>
                       <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '4px', marginBottom: 0 }}>
                         ادفع كاش لمندوب التوصيل بعد الفحص والمعاينة عند استلام الشحنة في عنوانك.
                       </p>
@@ -388,7 +411,7 @@ export const CheckoutPage = () => {
             <div>
               <div style={{ background: '#fff', padding: '25px', borderRadius: '12px', border: '1px solid var(--color-border)', position: 'sticky', top: '90px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
                 <h3 style={{ fontSize: '1.2rem', color: 'var(--color-heading)', marginBottom: '18px', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
-                  🛍️ ملخص المنتجات ({cart.length})
+                  ملخص المنتجات ({cart.length})
                 </h3>
 
                 <div style={{ maxHeight: '280px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px', paddingLeft: '5px' }}>
@@ -420,7 +443,7 @@ export const CheckoutPage = () => {
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: '#666' }}>
                     <span>مصاريف الشحن والتوصيل:</span>
-                    <span style={{ color: 'var(--color-success)', fontWeight: 700 }}>مجاناً ✨</span>
+                    <span style={{ color: 'var(--color-success)', fontWeight: 700 }}>مجاناً</span>
                   </div>
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 900, color: 'var(--color-primary)', borderTop: '2px dashed var(--color-border)', paddingTop: '12px', marginTop: '5px' }}>
@@ -434,11 +457,11 @@ export const CheckoutPage = () => {
                   className="btn btn-primary btn-lg"
                   style={{ width: '100%', marginTop: '25px', padding: '16px', fontSize: '1.1rem', fontWeight: 800, borderRadius: '8px' }}
                 >
-                  ✅ تأكيد الطلب والدفع الآن
+                  تأكيد الطلب والدفع الآن
                 </button>
 
                 <div style={{ textAlign: 'center', marginTop: '12px', fontSize: '0.78rem', color: '#888' }}>
-                  🔒 معلوماتك محمية ومُشفرة 100% وفق أعلى معايير الأمان
+                  معلوماتك محمية ومُشفرة 100% وفق أعلى معايير الأمان
                 </div>
               </div>
             </div>
