@@ -1,18 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 
 export const CartPage = () => {
-  const { cart, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
+  const navigate = useNavigate();
+  const { cart, removeFromCart, updateQuantity, getTotalPrice } = useCart();
   const { showToast } = useToast();
 
   const totalPrice = getTotalPrice();
 
   const handleCheckout = () => {
-    alert('شكراً لثقتكِ بـ سعودي! تم استلام طلبكِ بنجاح وسيتواصل معكِ فريق الدعم لخدمة التوصيل والدفع عند الاستلام.');
-    clearCart();
-    showToast('تم تأكيد الطلب بنجاح');
+    navigate('/checkout');
   };
 
   return (

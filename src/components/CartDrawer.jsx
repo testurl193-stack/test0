@@ -60,8 +60,8 @@ export const CartDrawer = () => {
               <span>الإجمالي:</span>
               <span>{totalPrice.toLocaleString('ar-EG')} ج.م</span>
             </div>
-            <Link to="/cart" className="btn btn-primary" style={{ width: '100%' }} onClick={closeCart}>
-              إتمام الطلب والدفع
+            <Link to="/checkout" className="btn btn-primary" style={{ width: '100%' }} onClick={closeCart}>
+              إتمام الطلب والدفع 🔒
             </Link>
           </div>
         )}

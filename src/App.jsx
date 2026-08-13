@@ -21,6 +21,8 @@ import { HomePage } from './pages/HomePage';
 import { ShopPage } from './pages/ShopPage';
 import { ProductDetailsPage } from './pages/ProductDetailsPage';
 import { CartPage } from './pages/CartPage';
+import { CheckoutPage } from './pages/CheckoutPage';
+import { OrderSuccessPage } from './pages/OrderSuccessPage';
 import { AdminPage } from './pages/AdminPage';
 
 function ScrollToTop() {
@@ -66,6 +68,8 @@ function MainLayout() {
         <Route path="/shop" element={<ShopPage />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/order-success" element={<OrderSuccessPage />} />
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
 

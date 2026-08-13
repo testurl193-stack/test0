@@ -1859,6 +1859,7 @@ main {
   .quantity-selector__input { width: 50px; height: 44px; }
 
   .cart-page__grid { grid-template-columns: 1fr; }
+  .checkout-grid { grid-template-columns: 1fr !important; }
   .cart-item { grid-template-columns: 80px 1fr auto; gap: 10px; }
 
   .footer__grid { grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
