@@ -42,18 +42,6 @@ export const Footer = () => {
               <li><Link to="/shop?category=abayas">قسم العبايات</Link></li>
               <li><Link to="/shop?category=niqab">قسم النقاب</Link></li>
               <li><Link to="/shop?category=khimar">قسم الخمار</Link></li>
-              <li><Link to="/admin">لوحة التحكم</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="footer__title">خدمة العملاء</h4>
-            <ul className="footer__links">
-              <li><a href="#" onClick={(e) => e.preventDefault()}>سياسة الشحن والتوصيل</a></li>
-              <li><a href="#" onClick={(e) => e.preventDefault()}>سياسة الاستبدال والاسترجاع</a></li>
-              <li><a href="#" onClick={(e) => e.preventDefault()}>دليل تحديد المقاسات</a></li>
-              <li><a href="#" onClick={(e) => e.preventDefault()}>الأسئلة الشائعة</a></li>
-              <li><Link to="/cart">سلة التسوق</Link></li>
             </ul>
           </div>
 

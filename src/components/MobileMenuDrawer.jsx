@@ -30,9 +30,6 @@ export const MobileMenuDrawer = ({ isOpen, onClose }) => {
           <Link to="/shop?category=khimar" className="mobile-menu__nav-link" onClick={onClose}>
             قسم الخمار
           </Link>
-          <Link to="/admin" className="mobile-menu__nav-link" onClick={onClose} style={{ color: '#C8A96E' }}>
-            لوحة التحكم (Admin)
-          </Link>
         </nav>
       </div>
     </>
