@@ -31,7 +31,7 @@ export const CartDrawer = () => {
             cart.map((item, idx) => (
               <div className="cart-drawer-item" key={`${item.id}-${item.color}-${item.size}-${idx}`}>
                 <div className="cart-drawer-item__image">
-                  <img src={item.image} alt={item.name} />
+                  <img src={item.image} alt={item.name} loading="lazy" decoding="async" />
                 </div>
                 <div style={{ flex: 1 }}>
                   <h4 className="cart-drawer-item__name">{item.name}</h4>

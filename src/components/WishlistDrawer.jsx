@@ -29,7 +29,7 @@ export const WishlistDrawer = () => {
             wishlistItems.map((item) => (
               <div className="cart-drawer-item" key={item.id}>
                 <div className="cart-drawer-item__image">
-                  <img src={item.image} alt={item.name} />
+                  <img src={item.image} alt={item.name} loading="lazy" decoding="async" />
                 </div>
                 <div style={{ flex: 1 }}>
                   <h4 className="cart-drawer-item__name">{item.name}</h4>

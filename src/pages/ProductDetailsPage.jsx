@@ -48,7 +48,7 @@ export const ProductDetailsPage = () => {
           {/* Gallery Left */}
           <div className="product-gallery">
             <div className="product-gallery__main">
-              <img src={selectedImage || product.image} alt={product.name} id="main-product-img" />
+              <img src={selectedImage || product.image} alt={product.name} id="main-product-img" loading="eager" decoding="async" />
               <button
                 className={`product-gallery__wishlist ${wishlisted ? 'wishlisted' : ''}`}
                 onClick={() => toggleWishlist(product)}
@@ -67,7 +67,7 @@ export const ProductDetailsPage = () => {
                   className={`product-gallery__thumb ${selectedImage === img ? 'active' : ''}`}
                   onClick={() => setSelectedImage(img)}
                 >
-                  <img src={img} alt={`صورة ${idx + 1}`} />
+                  <img src={img} alt={`صورة ${idx + 1}`} loading="lazy" decoding="async" />
                 </div>
               ))}
             </div>
