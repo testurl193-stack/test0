@@ -1,0 +1,1 @@
+Root of the Hadiya e-commerce project that configures Vite to build the React SPA, serves static assets and HTML entry points, and declares deployment rules for Vercel.

@@ -1,0 +1,6 @@
+- Every page declares `lang="ar" dir="rtl"` on the `<html>` element to enforce right-to-left Arabic layout consistently.
+- Shared chrome (header, footer, mobile bottom nav, search overlay, cart/wishlist drawers, toast) is duplicated verbatim across `shop.html`, `product.html`, and `cart.html` so each page remains independently deployable.
+- Product data is embedded directly in DOM attributes (`data-id`, `data-name`, `data-price`, `data-image`) on `.product-card` elements and read by the shared `js/cart.js` / `js/app.js` scripts at runtime.
+- Client-side interactivity is wired through event delegation on container elements (e.g., `products-table-body`, `orders-table-body`) rather than per-element listeners.
+- Tabbed sections use a `data-tab` attribute on nav items paired with corresponding `id="tab-*"` content panels toggled by showing/hiding `display: none/block`.
+- Modals and drawers follow a consistent open/close pattern: a visible class (e.g., `active`) is toggled on an overlay wrapper while the inner panel is shown alongside it.

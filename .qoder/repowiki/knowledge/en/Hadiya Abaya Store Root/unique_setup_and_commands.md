@@ -1,0 +1,1 @@
+`npm run dev` starts the Vite dev server on port 3000 with auto-open; `npm run build` produces the static site served by the HTML entrypoints and static assets; `npm run preview` serves the built output locally.

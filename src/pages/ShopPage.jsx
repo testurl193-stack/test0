@@ -4,7 +4,7 @@ import { useProducts } from '../context/ProductContext';
 import { ProductCard } from '../components/ProductCard';
 
 export const ShopPage = () => {
-  const { products } = useProducts();
+  const { visibleProducts: products } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const initialCat = searchParams.get('category') || 'all';

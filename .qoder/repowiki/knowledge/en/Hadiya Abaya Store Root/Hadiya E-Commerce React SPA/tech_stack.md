@@ -1,0 +1,1 @@
+React + React Router DOM for SPA routing; React Context API for cross-component state (cart, wishlist, products, toasts); CSS modules split across `styles/style.css` and `styles/animations.css`; Vite build with `import.meta.env.PROD` gating for Service Worker registration.

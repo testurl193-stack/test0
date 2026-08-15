@@ -1,0 +1,13 @@
+schema_version: 1
+module_path: html_entrypoints
+title: Hadiya Store HTML Entry Points
+scope:
+    - index.html
+    - admin.html
+    - cart.html
+    - product.html
+    - shop.html
+source_files: []
+depends_on: []
+related_to:
+    - path: react_app

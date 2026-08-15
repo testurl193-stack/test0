@@ -1,0 +1,2 @@
+- Client routes are handled entirely in the browser via a single-page rewrite to `/index.html`, so no server-side route definitions exist at this level.
+- Static resources under `/assets`, `/images`, and generated JS/CSS bundles are marked immutable with long-lived `Cache-Control` headers for optimal CDN caching.

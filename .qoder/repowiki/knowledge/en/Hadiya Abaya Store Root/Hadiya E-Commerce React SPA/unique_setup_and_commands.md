@@ -1,0 +1,1 @@
+Development starts by mounting `src/main.jsx` into the `#root` element; in production the same bundle registers `/sw.js` as a Service Worker after load for offline caching.

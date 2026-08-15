@@ -1,0 +1,1 @@
+The `_headers` and `_redirects` files must be placed at the static site root for Netlify/Vercel to pick them up automatically; changing `CACHE_NAME` in `sw.js` requires a full service worker update to clear old caches.

@@ -1,0 +1,5 @@
+- CSS uses BEM-style class names with double-underscore sub-blocks (e.g. `.header__nav-link`, `.product-card__image-wrapper`) and modifier suffixes (e.g. `--new`, `--sale`, `--hot`).
+- All visual tokens are centralized as CSS custom properties under `:root` (colors, font sizes, spacing, radii, z-index scale, transition timings) and referenced via `var(--...)` instead of hard-coded values.
+- Animations favor GPU-accelerated transforms (`translate3d`, `scale3d`) with `backface-visibility: hidden` and respect `prefers-reduced-motion` to disable motion on low-spec devices.
+- Service worker routing is split into named caches per resource type (`STATIC_CACHE` for scripts/styles, `IMAGE_CACHE` for images) with strategy selection based on `request.destination` or URL path prefix.
+- Images are organized into semantic subdirectories (`banners/`, `categories/`, `hero/`, `products/`) under `public/images/` rather than a flat folder.

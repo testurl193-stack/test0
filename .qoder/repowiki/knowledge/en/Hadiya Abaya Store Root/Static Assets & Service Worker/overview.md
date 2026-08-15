@@ -1,0 +1,1 @@
+Serves the Hadiya store's CSS stylesheets, product/category/hero images, and a service worker with Netlify-style headers and redirects for caching and offline support.

@@ -1,0 +1,14 @@
+schema_version: 1
+module_path: ""
+title: Hadiya Abaya Store Root
+scope:
+    - .gitignore
+    - package.json
+    - package-lock.json
+    - vite.config.js
+    - vercel.json
+    - .env.example
+    - favicon.svg
+source_files: []
+depends_on: []
+related_to: []

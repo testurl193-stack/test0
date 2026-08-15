@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: react_app/app_entry_and_support
+title: React App Entry, Routing & Global State
+scope:
+    - src/
+source_files: []
+depends_on: []
+related_to: []

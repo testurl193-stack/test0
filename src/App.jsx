@@ -8,6 +8,8 @@ import { ToastProvider } from './context/ToastContext';
 import { ProductProvider } from './context/ProductContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { CartProvider } from './context/CartContext';
+import { AdminProvider } from './context/AdminContext';
+import { AdminDataProvider } from './context/AdminDataContext';
 
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
@@ -23,7 +25,9 @@ import { ProductDetailsPage } from './pages/ProductDetailsPage';
 import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { OrderSuccessPage } from './pages/OrderSuccessPage';
-import { AdminPage } from './pages/AdminPage';
+import { NotFoundPage } from './pages/NotFoundPage';
+import AdminLoginPage from './pages/admin/AdminLoginPage';
+import AdminDashboard from './pages/admin/AdminDashboard';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -33,9 +37,20 @@ function ScrollToTop() {
   return null;
 }
 
+function AdminLayout() {
+  return (
+    <Routes>
+      <Route path="/a7d9f2e8b1c3/login" element={<AdminLoginPage />} />
+      <Route path="/a7d9f2e8b1c3/dashboard" element={<AdminDashboard />} />
+    </Routes>
+  );
+}
+
 function MainLayout() {
   const location = useLocation();
-  const isAdmin = location.pathname === '/admin';
+
+  // Check if on admin route
+  const isAdminRoute = location.pathname.startsWith('/a7d9f2e8b1c3');
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -53,15 +68,24 @@ function MainLayout() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Admin routes - no header/footer
+  if (isAdminRoute) {
+    return (
+      <>
+        <ScrollToTop />
+        <AdminLayout />
+      </>
+    );
+  }
+
+  // Regular site routes
   return (
     <>
       <ScrollToTop />
-      {!isAdmin && (
-        <Header
-          onOpenSearch={() => setIsSearchOpen(true)}
-          onToggleMobileMenu={() => setIsMobileMenuOpen(true)}
-        />
-      )}
+      <Header
+        onOpenSearch={() => setIsSearchOpen(true)}
+        onToggleMobileMenu={() => setIsMobileMenuOpen(true)}
+      />
 
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -70,11 +94,11 @@ function MainLayout() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/order-success" element={<OrderSuccessPage />} />
-        <Route path="/admin" element={<AdminPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
-      {!isAdmin && <Footer />}
-      {!isAdmin && <MobileBottomNav onOpenSearch={() => setIsSearchOpen(true)} />}
+      <Footer />
+      <MobileBottomNav onOpenSearch={() => setIsSearchOpen(true)} />
 
       <CartDrawer />
       <WishlistDrawer />
@@ -95,15 +119,19 @@ function MainLayout() {
 export default function App() {
   return (
     <ToastProvider>
-      <ProductProvider>
-        <WishlistProvider>
-          <CartProvider>
-            <BrowserRouter>
-              <MainLayout />
-            </BrowserRouter>
-          </CartProvider>
-        </WishlistProvider>
-      </ProductProvider>
+      <AdminProvider>
+        <AdminDataProvider>
+        <ProductProvider>
+          <WishlistProvider>
+            <CartProvider>
+              <BrowserRouter>
+                <MainLayout />
+              </BrowserRouter>
+            </CartProvider>
+          </WishlistProvider>
+        </ProductProvider>
+        </AdminDataProvider>
+      </AdminProvider>
     </ToastProvider>
   );
 }

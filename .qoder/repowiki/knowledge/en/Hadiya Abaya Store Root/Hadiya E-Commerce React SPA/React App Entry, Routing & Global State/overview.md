@@ -1,0 +1,1 @@
+Bootstraps the Hadiya e-commerce React SPA with routing, global state providers (cart, wishlist, products, toasts), shared layout chrome, and page/component trees for browsing, checkout, and admin.

@@ -1,0 +1,71 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: en-US
+branch: main
+nodes_managed: true
+exported_at: "2026-08-13T15:41:42Z"
+modules:
+    "":
+        dir_name: Hadiya Abaya Store Root
+        title: Hadiya Abaya Store Root
+        scope:
+            - .gitignore
+            - package.json
+            - package-lock.json
+            - vite.config.js
+            - vercel.json
+            - .env.example
+            - favicon.svg
+        source_files: []
+        children:
+            - html_entrypoints
+            - react_app
+            - static_assets
+        depends_on: []
+        related_to: []
+    html_entrypoints:
+        dir_name: Hadiya Store HTML Entry Points
+        title: Hadiya Store HTML Entry Points
+        scope:
+            - index.html
+            - admin.html
+            - cart.html
+            - product.html
+            - shop.html
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: react_app
+    react_app:
+        dir_name: Hadiya E-Commerce React SPA
+        title: Hadiya E-Commerce React SPA
+        scope:
+            - src/
+        source_files: []
+        children:
+            - react_app/app_entry_and_support
+        depends_on: []
+        related_to:
+            - path: html_entrypoints
+            - path: static_assets
+    react_app/app_entry_and_support:
+        dir_name: React App Entry, Routing & Global State
+        title: React App Entry, Routing & Global State
+        scope:
+            - src/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    static_assets:
+        dir_name: Static Assets & Service Worker
+        title: Static Assets & Service Worker
+        scope:
+            - css/
+            - public/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: react_app

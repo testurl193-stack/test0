@@ -4,7 +4,7 @@ import { useProducts } from '../context/ProductContext';
 import { ProductCard } from '../components/ProductCard';
 
 export const HomePage = () => {
-  const { products } = useProducts();
+  const { visibleProducts: products } = useProducts();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slidesData = [

@@ -1,0 +1,5 @@
+- Each piece of global state is implemented as a React Context module that exports a `*Provider` component and a matching `useXxx` custom hook.
+- Context state is initialized lazily from `localStorage` using a `useState(() => ...)` initializer and synced back via a `useEffect` watching the state, keyed by a stable `hadiya_*` string.
+- UI chrome (Header/Footer/MobileBottomNav) and modal/drawer overlays are mounted once in `MainLayout` and driven by local layout state passed down via props rather than prop drilling through every page.
+- Pages are colocated one-per-file under `src/pages/` and exported as named components consumed by the `Routes` table in `App.jsx`.
+- User feedback is emitted through the shared `useToast().showToast(message)` hook instead of inline alerts or ad-hoc notifications.

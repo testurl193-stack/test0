@@ -1,0 +1,1 @@
+Plain CSS with BEM naming and CSS custom properties; vanilla JavaScript Service Worker using the Cache Storage API with named caches (`STATIC_CACHE`, `IMAGE_CACHE`); Netlify/Vercel deployment conventions via `_headers` and `_redirects` manifest files.

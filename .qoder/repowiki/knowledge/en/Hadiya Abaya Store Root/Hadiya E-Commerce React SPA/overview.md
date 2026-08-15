@@ -1,0 +1,1 @@
+React single-page application that wires routing, global state providers, shared chrome components, and page trees into a browsable e-commerce storefront with checkout and admin flows.

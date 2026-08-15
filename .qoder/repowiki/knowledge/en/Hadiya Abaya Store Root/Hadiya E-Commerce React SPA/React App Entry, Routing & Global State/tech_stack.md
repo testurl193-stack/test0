@@ -1,0 +1,1 @@
+React 18 with `react-router-dom` v6 for client-side routing, `react-dom/client` root rendering, and a browser Service Worker registered at build time for offline caching. State is persisted via `localStorage` keys prefixed `hadiya_`.

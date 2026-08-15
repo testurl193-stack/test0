@@ -1,0 +1,1 @@
+Static HTML entry pages for the Hadiya e-commerce site, providing the React app shell (index.html) and standalone marketing/admin pages (shop, product, cart, admin).

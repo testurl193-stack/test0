@@ -1,0 +1,1 @@
+Service Worker registration is gated on `import.meta.env.PROD`, so SW caching only activates in production builds (e.g. `vite build`). The app expects a top-level `/sw.js` at runtime.

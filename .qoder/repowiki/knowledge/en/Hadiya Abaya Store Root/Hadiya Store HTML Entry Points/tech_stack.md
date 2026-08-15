@@ -1,0 +1,1 @@
+Plain HTML5 + vanilla JavaScript; React SPA bootstrapped from `index.html` via an ES module importing `/src/main.jsx`. Shared UI is styled with BEM-style CSS classes loaded from `css/style.css` and `css/animations.css`. Google Fonts (Cairo, Amiri, Scheherazade New) are preconnected and loaded in `<head>`.

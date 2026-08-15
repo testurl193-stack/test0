@@ -1,0 +1,1 @@
+No build step is required to serve these files — they can be opened directly in a browser or served by any static HTTP server. The SPA entry requires a local dev server to resolve `/src/main.jsx` as an ES module; the other pages work with relative paths to `css/` and `js/` assets.

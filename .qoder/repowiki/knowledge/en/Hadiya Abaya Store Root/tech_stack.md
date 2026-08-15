@@ -1,0 +1,1 @@
+Vite 5 + React 18 as the unified build/runtime across the project; Vercel deployment configuration via `vercel.json` for rewrites and HTTP headers.

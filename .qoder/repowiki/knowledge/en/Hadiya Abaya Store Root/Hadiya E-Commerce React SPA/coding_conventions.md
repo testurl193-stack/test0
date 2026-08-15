@@ -1,0 +1,4 @@
+- Global state is exposed via React Context providers wrapped around the entire router in `App.jsx`, and pages/components consume it through `useContext` rather than prop drilling.
+- Shared UI chrome (header, footer, mobile nav, drawer overlays) is rendered once in `MainLayout` and toggled via local state, keeping pages focused on content.
+- Admin route (`/admin`) is treated specially by hiding all chrome elements while still rendering its own page inside the same layout.
+- Component files use JSX extension and are co-located with their styles in a flat `components/`, `pages/`, `context/`, `styles/` directory structure.

@@ -17,11 +17,28 @@ export const ProductProvider = ({ children }) => {
     localStorage.setItem('hadiya_products', JSON.stringify(products));
   }, [products]);
 
+  // returns only products whose category is visible
+  // (filters out products from hidden categories)
+  const getVisibleProducts = () => {
+    try {
+      const cats = JSON.parse(localStorage.getItem('hadiya_categories') || '[]');
+      if (!cats.length) return products;
+      const hiddenIds = new Set(cats.filter(c => c.visible === false).map(c => c.id));
+      if (!hiddenIds.size) return products;
+      return products.filter(p => !hiddenIds.has(p.category));
+    } catch {
+      return products;
+    }
+  };
+
   const addProduct = (newProd) => {
     const created = {
       ...newProd,
       id: Date.now().toString(),
       image: newProd.image || '/images/products/black-niqab.png',
+      productImages: newProd.productImages || [],
+      sizes: newProd.sizes || [],
+      colors: newProd.colors || [],
       badgeText: null,
       badge: null
     };
@@ -42,6 +59,7 @@ export const ProductProvider = ({ children }) => {
     <ProductContext.Provider
       value={{
         products,
+        visibleProducts: getVisibleProducts(),
         addProduct,
         updateProduct,
         deleteProduct
