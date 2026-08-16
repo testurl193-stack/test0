@@ -5,17 +5,74 @@ import { useToast } from '../../../context/ToastContext';
 const C = {
   brown: '#5C2E0A', brownMid: '#8B4513', brownLight: '#C4783A',
   card: '#FFFFFF', border: '#D9D0C7', text: '#1A1A1A', muted: '#7A7A7A',
-  red: '#DC2626', dark: '#1C1208', darkMid: '#2E1E0D',
+  red: '#DC2626', green: '#16A34A',
+  dark: '#1C1208', darkMid: '#2E1E0D',
 };
 
 const emptyForm = { name: '', visible: true };
 
 const Toggle = ({ value, onChange }) => (
   <button type="button" onClick={() => onChange(!value)}
-    style={{ width: 52, height: 30, borderRadius: 15, background: value ? C.brown : C.border, border: 'none', cursor: 'pointer', position: 'relative', transition: 'background 0.2s', flexShrink: 0 }}>
-    <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#fff', position: 'absolute', top: 4, transition: 'right 0.2s', right: value ? 4 : 26 }} />
+    style={{ width: 48, height: 28, borderRadius: 14, background: value ? C.brown : C.border, border: 'none', cursor: 'pointer', position: 'relative', transition: 'background 0.2s', flexShrink: 0 }}>
+    <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#fff', position: 'absolute', top: 4, transition: 'right 0.2s', right: value ? 4 : 24 }} />
   </button>
 );
+
+const StatusPill = ({ visible }) => {
+  const color = visible ? C.green : C.muted;
+  const label = visible ? 'ظاهر' : 'مخفي';
+  return (
+    <span style={{
+      fontSize: '0.7rem', fontWeight: 700, color,
+      background: color + '14', padding: '5px 12px',
+      borderRadius: 20, border: `1px solid ${color}28`,
+      whiteSpace: 'nowrap',
+    }}>
+      {label}
+    </span>
+  );
+};
+
+const CategoryRow = ({ cat, index, onOpen, onDragStart, onDragOver, onDragEnd, dragging, isLast }) => {
+  const barColor = cat.visible ? C.green : C.muted;
+
+  return (
+    <div
+      draggable
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDragEnd={onDragEnd}
+      onClick={() => onOpen(cat)}
+      style={{
+        display: 'flex', alignItems: 'stretch', gap: 10,
+        padding: '14px 16px',
+        borderBottom: isLast ? 'none' : '1px solid #F0EBE4',
+        cursor: 'pointer', transition: 'background 0.15s, opacity 0.2s',
+        opacity: dragging ? 0.45 : 1,
+        background: cat.visible ? 'transparent' : 'rgba(0,0,0,0.02)',
+      }}>
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{ color: C.muted, fontSize: '1rem', userSelect: 'none', flexShrink: 0, width: 18, textAlign: 'center', cursor: 'grab', alignSelf: 'center' }}>
+        ⋮⋮
+      </div>
+
+      <div style={{ width: 4, borderRadius: 2, background: barColor, flexShrink: 0, opacity: 0.75, alignSelf: 'stretch', minHeight: 44 }} />
+
+      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ fontWeight: 800, fontSize: '0.9rem', color: cat.visible ? C.text : C.muted, wordBreak: 'break-word' }}>
+          {cat.name}
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
+          <span style={{ fontSize: '0.72rem', color: C.muted, background: '#F5F0EB', border: `1px solid ${C.border}`, padding: '3px 9px', borderRadius: 7 }}>
+            الترتيب {index + 1}
+          </span>
+          <StatusPill visible={cat.visible} />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const CategoriesManagement = () => {
   const { categories, addCategory, updateCategory, deleteCategory, reorderCategories } = useAdminData();
@@ -41,18 +98,22 @@ export const CategoriesManagement = () => {
     close();
   };
 
-  const handleDelete = (cat) => {
-    if (window.confirm(`حذف تصنيف "${cat.name}"؟`)) {
-      deleteCategory(cat.id);
+  const handleDelete = () => {
+    if (!editing) return;
+    if (window.confirm(`حذف تصنيف "${editing.name}"؟`)) {
+      deleteCategory(editing.id);
       showToast('تم حذف التصنيف');
+      close();
     }
   };
+
+  const sorted = [...categories].sort((a, b) => a.order - b.order);
 
   const onDragStart = (i) => setDragging(i);
   const onDragOver  = (e, i) => {
     e.preventDefault();
     if (dragging === null || dragging === i) return;
-    const list = [...categories];
+    const list = [...sorted];
     const [item] = list.splice(dragging, 1);
     list.splice(i, 0, item);
     reorderCategories(list);
@@ -60,148 +121,107 @@ export const CategoriesManagement = () => {
   };
   const onDragEnd = () => setDragging(null);
 
-  const sorted = [...categories].sort((a, b) => a.order - b.order);
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
         <div>
           <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: C.brown, margin: 0 }}>التصنيفات</h2>
-          <p style={{ fontSize: '0.78rem', color: C.muted, margin: '4px 0 0' }}>اسحب الصفوف لتغيير الترتيب</p>
+          <p style={{ fontSize: '0.78rem', color: C.muted, margin: '4px 0 0' }}>اسحب ⋮⋮ لتغيير الترتيب · اضغط للتعديل</p>
         </div>
         <button onClick={openAdd} style={{
           padding: '11px 22px', background: `linear-gradient(135deg, ${C.dark}, ${C.darkMid})`,
           color: '#F0E6D6', border: 'none', borderRadius: 12, fontWeight: 700,
           fontSize: '0.9rem', cursor: 'pointer', fontFamily: "'Cairo', sans-serif",
-          minHeight: 46, boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+          minHeight: 46, boxShadow: '0 4px 12px rgba(0,0,0,0.2)', whiteSpace: 'nowrap',
         }}>+ إضافة تصنيف</button>
       </div>
 
-      {/* ── Table card ── */}
-      <div style={{
-        background: C.card, borderRadius: 18, border: `1px solid ${C.border}`,
-        overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.07)',
-      }}>
-        {/* Table header */}
+      <div style={{ fontSize: '0.8rem', color: C.muted, fontWeight: 600 }}>{sorted.length} تصنيف</div>
+
+      {/* Table card — same layout as Orders */}
+      {sorted.length > 0 ? (
         <div style={{
-          display: 'grid', gridTemplateColumns: '24px 56px 1fr auto',
-          alignItems: 'center', gap: 14, padding: '11px 20px',
-          background: `linear-gradient(135deg, ${C.dark}, ${C.darkMid})`,
+          background: C.card, borderRadius: 18, border: `1px solid ${C.border}`,
+          overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.07)',
         }}>
-          <div />
-          <div style={{ fontSize: '0.62rem', fontWeight: 700, color: 'rgba(196,168,130,0.6)', textTransform: 'uppercase', letterSpacing: '1px' }}>رمز</div>
-          <div style={{ fontSize: '0.62rem', fontWeight: 700, color: 'rgba(196,168,130,0.6)', textTransform: 'uppercase', letterSpacing: '1px' }}>التصنيف</div>
-          <div style={{ fontSize: '0.62rem', fontWeight: 700, color: 'rgba(196,168,130,0.6)', textTransform: 'uppercase', letterSpacing: '1px' }}>إجراءات</div>
+          <div style={{
+            padding: '12px 16px',
+            background: `linear-gradient(135deg, ${C.dark}, ${C.darkMid})`,
+            borderBottom: '1px solid rgba(255,255,255,0.06)',
+            fontSize: '0.72rem', fontWeight: 700, color: 'rgba(196,168,130,0.75)',
+          }}>
+            اسحب ⋮⋮ لتغيير الترتيب · اضغط للتعديل
+          </div>
+          <div>
+            {sorted.map((cat, i) => (
+              <CategoryRow
+                key={cat.id}
+                cat={cat}
+                index={i}
+                onOpen={openEdit}
+                onDragStart={() => onDragStart(i)}
+                onDragOver={(e) => onDragOver(e, i)}
+                onDragEnd={onDragEnd}
+                dragging={dragging === i}
+                isLast={i === sorted.length - 1}
+              />
+            ))}
+          </div>
         </div>
+      ) : (
+        <div style={{ textAlign: 'center', padding: '60px 20px', color: C.muted, fontSize: '0.95rem', background: C.card, borderRadius: 16, border: `1px solid ${C.border}` }}>
+          لا توجد تصنيفات
+        </div>
+      )}
 
-        {/* Rows */}
-        {sorted.map((cat, i) => (
-          <div key={cat.id}
-            draggable
-            onDragStart={() => onDragStart(i)}
-            onDragOver={(e) => onDragOver(e, i)}
-            onDragEnd={onDragEnd}
-            style={{
-              display: 'grid', gridTemplateColumns: '24px 56px 1fr auto',
-              alignItems: 'center', gap: 14, padding: '14px 20px',
-              borderBottom: i < sorted.length - 1 ? `1px solid #F0EBE4` : 'none',
-              cursor: 'grab', opacity: dragging === i ? 0.45 : 1,
-              transition: 'opacity 0.2s',
-              background: cat.visible ? 'transparent' : 'rgba(0,0,0,0.02)',
-            }}>
-
-            {/* Drag dots */}
-            <div style={{ color: C.muted, fontSize: '1rem', userSelect: 'none', textAlign: 'center' }}>⋮⋮</div>
-
-            {/* Icon box — first letter */}
-            <div style={{
-              width: 44, height: 44, borderRadius: 12,
-              background: cat.visible ? 'linear-gradient(135deg, #F5F0EB, #EDE8E0)' : '#f0f0f0',
-              border: `1px solid ${C.border}`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '1.1rem', fontWeight: 900,
-              color: cat.visible ? C.brown : C.muted,
-              flexShrink: 0, opacity: cat.visible ? 1 : 0.5,
-            }}>
-              {cat.name?.charAt(0) || '؟'}
-            </div>
-
-            {/* Name */}
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontWeight: 700, fontSize: '0.92rem', color: cat.visible ? C.text : C.muted }}>
-                {cat.name}
-                {!cat.visible && (
-                  <span style={{ marginRight: 8, fontSize: '0.68rem', color: C.muted, fontWeight: 500, background: '#f0f0f0', padding: '2px 8px', borderRadius: 6 }}>مخفي</span>
-                )}
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-              <button onClick={() => openEdit(cat)}
-                style={{ padding: '8px 14px', background: '#FAF7F4', border: `1.5px solid ${C.brown}`, color: C.brown, borderRadius: 8, fontWeight: 700, fontSize: '0.78rem', cursor: 'pointer', fontFamily: "'Cairo', sans-serif", minHeight: 38 }}>
-                تعديل
-              </button>
-              <button onClick={() => handleDelete(cat)}
-                style={{ padding: '8px 14px', background: '#FAF7F4', border: `1.5px solid ${C.border}`, color: C.muted, borderRadius: 8, fontWeight: 700, fontSize: '0.78rem', cursor: 'pointer', fontFamily: "'Cairo', sans-serif", minHeight: 38 }}>
-                حذف
-              </button>
-            </div>
-          </div>
-        ))}
-
-        {sorted.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '50px 20px', color: C.muted, fontSize: '0.9rem' }}>
-            لا توجد تصنيفات
-          </div>
-        )}
-      </div>
-
-      {/* ── Modal ── */}
+      {/* Modal */}
       {isOpen && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', zIndex: 1000, backdropFilter: 'blur(4px)' }}
           onClick={close}>
-          <div style={{ background: C.card, borderRadius: '20px 20px 0 0', width: '100%', maxWidth: 500, maxHeight: '88vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 -10px 50px rgba(0,0,0,0.3)' }}
+          <div style={{ background: C.card, borderRadius: '20px 20px 0 0', width: '100%', maxWidth: 480, maxHeight: '88vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 -10px 50px rgba(0,0,0,0.3)' }}
             onClick={e => e.stopPropagation()}>
 
-            {/* Modal header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 22px', background: `linear-gradient(135deg, ${C.dark}, ${C.darkMid})`, flexShrink: 0 }}>
-              <span style={{ fontWeight: 800, fontSize: '1.05rem', color: '#F0E6D6' }}>
-                {editing ? 'تعديل التصنيف' : 'إضافة تصنيف جديد'}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 18px', background: `linear-gradient(135deg, ${C.dark}, ${C.darkMid})`, flexShrink: 0 }}>
+              <span style={{ fontWeight: 800, fontSize: '1rem', color: '#F0E6D6' }}>
+                {editing ? `تعديل ${editing.name}` : 'إضافة تصنيف جديد'}
               </span>
-              <button onClick={close} style={{ width: 38, height: 38, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', color: '#F0E6D6', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+              <button type="button" onClick={close} style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', color: '#F0E6D6', fontSize: '1.1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
             </div>
 
-            {/* Form body */}
-            <div style={{ padding: '22px 20px 28px', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: 18 }}>
+            <div style={{ padding: '18px 16px 24px', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: 14 }}>
 
               <div>
                 <label style={FL.lbl}>اسم التصنيف *</label>
                 <input value={form.name} onChange={e => set('name', e.target.value)} style={FL.inp} placeholder="مثال: عبايات" />
               </div>
 
-              {/* Visible toggle row */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: '#FAF7F4', borderRadius: 12, border: `1px solid ${C.border}` }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: '#FAF7F4', borderRadius: 10, border: `1px solid ${C.border}` }}>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.9rem', color: C.text }}>ظاهر في الموقع</div>
-                  <div style={{ fontSize: '0.72rem', color: C.muted, marginTop: 3 }}>يظهر التصنيف للعملاء في الموقع</div>
+                  <div style={{ fontWeight: 700, fontSize: '0.85rem', color: C.text }}>ظاهر في الموقع</div>
+                  <div style={{ fontSize: '0.7rem', color: C.muted, marginTop: 2 }}>يظهر التصنيف للعملاء في الموقع</div>
                 </div>
                 <Toggle value={form.visible} onChange={v => set('visible', v)} />
               </div>
 
-              {/* Footer buttons */}
-              <div style={{ display: 'flex', gap: 12, paddingTop: 4 }}>
-                <button onClick={close}
-                  style={{ flex: 1, padding: '13px', background: '#fff', border: `1.5px solid ${C.border}`, color: C.muted, borderRadius: 12, fontWeight: 700, fontSize: '0.92rem', cursor: 'pointer', fontFamily: "'Cairo', sans-serif", minHeight: 50 }}>
+              <div style={{ display: 'flex', gap: 10, paddingTop: 4 }}>
+                <button type="button" onClick={close}
+                  style={{ flex: 1, padding: '11px', background: '#fff', border: `1.5px solid ${C.border}`, color: C.muted, borderRadius: 12, fontWeight: 700, fontSize: '0.88rem', cursor: 'pointer', fontFamily: "'Cairo', sans-serif", minHeight: 44 }}>
                   إلغاء
                 </button>
-                <button onClick={handleSave}
-                  style={{ flex: 2, padding: '13px', background: `linear-gradient(135deg, ${C.dark}, ${C.darkMid})`, color: '#F0E6D6', border: 'none', borderRadius: 12, fontWeight: 700, fontSize: '0.92rem', cursor: 'pointer', fontFamily: "'Cairo', sans-serif", minHeight: 50 }}>
+                <button type="button" onClick={handleSave}
+                  style={{ flex: 2, padding: '11px', background: `linear-gradient(135deg, ${C.dark}, ${C.darkMid})`, color: '#F0E6D6', border: 'none', borderRadius: 12, fontWeight: 700, fontSize: '0.88rem', cursor: 'pointer', fontFamily: "'Cairo', sans-serif", minHeight: 44 }}>
                   {editing ? 'تحديث التصنيف' : 'حفظ التصنيف'}
                 </button>
               </div>
+
+              {editing && (
+                <button type="button" onClick={handleDelete}
+                  style={{ width: '100%', padding: '12px', background: 'rgba(220,38,38,0.06)', border: '1.5px solid rgba(220,38,38,0.25)', color: C.red, borderRadius: 12, fontWeight: 700, fontSize: '0.88rem', cursor: 'pointer', fontFamily: "'Cairo', sans-serif", minHeight: 44 }}>
+                  حذف التصنيف
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -211,6 +231,10 @@ export const CategoriesManagement = () => {
 };
 
 const FL = {
-  lbl: { display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#1A1A1A', marginBottom: 8 },
-  inp: { width: '100%', padding: '12px 16px', border: `1.5px solid #D9D0C7`, borderRadius: 12, fontSize: '0.92rem', color: '#1A1A1A', fontFamily: "'Cairo', sans-serif", background: '#fff', boxSizing: 'border-box', outline: 'none', minHeight: 50 },
+  lbl: { display: 'block', fontSize: '0.8rem', fontWeight: 700, color: C.text, marginBottom: 6 },
+  inp: {
+    width: '100%', padding: '10px 12px', border: `1.5px solid ${C.border}`,
+    borderRadius: 10, fontSize: '0.88rem', color: C.text, fontFamily: "'Cairo', sans-serif",
+    background: '#fff', boxSizing: 'border-box', outline: 'none', minHeight: 42,
+  },
 };

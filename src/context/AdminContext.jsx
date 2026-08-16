@@ -3,8 +3,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const AdminContext = createContext();
 
 // الباسورد المشفر (في production يجب استخدام backend وتشفير حقيقي)
-const ADMIN_PASSWORD = 'Hadiya2024@Admin';
-const SESSION_KEY = 'hadiya_admin_session';
+const ADMIN_PASSWORD = 'Saudi2024@Admin';
+const SESSION_KEY = 'saudi_admin_session';
 const SESSION_DURATION = 2 * 60 * 60 * 1000; // 2 hours
 
 export const AdminProvider = ({ children }) => {

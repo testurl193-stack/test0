@@ -10,6 +10,7 @@ import { WishlistProvider } from './context/WishlistContext';
 import { CartProvider } from './context/CartContext';
 import { AdminProvider } from './context/AdminContext';
 import { AdminDataProvider } from './context/AdminDataContext';
+import { useAdminData } from './context/AdminDataContext';
 
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
@@ -48,6 +49,7 @@ function AdminLayout() {
 
 function MainLayout() {
   const location = useLocation();
+  const { settings } = useAdminData();
 
   // Check if on admin route
   const isAdminRoute = location.pathname.startsWith('/a7d9f2e8b1c3');
@@ -63,6 +65,13 @@ function MainLayout() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Apply Meta Title (SPA document title)
+  useEffect(() => {
+    if (isAdminRoute) return;
+    const title = settings?.metaTitle || 'سعودي — أفخر العبايات والأزياء المحتشمة';
+    document.title = title;
+  }, [settings?.metaTitle, isAdminRoute]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

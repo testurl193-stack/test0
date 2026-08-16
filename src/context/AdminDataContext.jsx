@@ -2,6 +2,13 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AdminDataContext = createContext();
 
+const STORAGE_KEYS = {
+  orders: 'saudi_orders',
+  categories: 'saudi_categories',
+  coupons: 'saudi_coupons',
+  settings: 'saudi_settings',
+};
+
 // ── بيانات أولية للطلبات ──────────────────────────────────────────────────
 const initialOrders = [
   {
@@ -88,7 +95,7 @@ const initialOrders = [
 
 // ── بيانات أولية للتصنيفات ────────────────────────────────────────────────
 const initialCategories = [
-  { id: 'abaya', name: 'عبايات', nameEn: 'Abayas', icon: '👗', order: 1, visible: true, productCount: 0 },
+  { id: 'abayas', name: 'عبايات', nameEn: 'Abayas', icon: '👗', order: 1, visible: true, productCount: 0 },
   { id: 'niqab', name: 'نقاب', nameEn: 'Niqab', icon: '🖤', order: 2, visible: true, productCount: 0 },
   { id: 'khimar', name: 'خمار', nameEn: 'Khimar', icon: '🧕', order: 3, visible: true, productCount: 0 },
   { id: 'accessories', name: 'إكسسوارات', nameEn: 'Accessories', icon: '✨', order: 4, visible: true, productCount: 0 },
@@ -114,22 +121,16 @@ const initialCoupons = [
 
 // ── بيانات أولية لإعدادات المتجر ─────────────────────────────────────────
 const initialSettings = {
-  storeName: 'هدية للعبايات',
-  storeNameEn: 'Hadiya Abayas',
-  currency: 'ج.م',
-  phone: '01234567890',
+  storeName: 'سعودي',
   whatsapp: '01234567890',
-  email: 'hadiya@example.com',
-  address: 'القاهرة، مصر',
-  facebook: '',
+  address: 'بورسعيد',
+  facebook: 'https://www.facebook.com/saudi.pts/',
   instagram: '',
   tiktok: '',
   minOrderFree: 1000,
   defaultShipping: 50,
   freeShippingEnabled: true,
-  returnPolicy: '7 أيام استرجاع',
-  metaTitle: 'هدية للعبايات — أفخر العبايات والأزياء المحتشمة',
-  metaDescription: 'تسوقي أجمل العبايات والنقاب والخمار من متجر هدية',
+  metaTitle: 'سعودي — أفخر العبايات والأزياء المحتشمة',
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -141,20 +142,158 @@ const load = (key, fallback) => {
   } catch { return fallback; }
 };
 
-export const AdminDataProvider = ({ children }) => {
-  const [orders, setOrders] = useState(() => load('hadiya_orders', initialOrders));
-  const [categories, setCategories] = useState(() => load('hadiya_categories', initialCategories));
-  const [coupons, setCoupons] = useState(() => load('hadiya_coupons', initialCoupons));
-  const [settings, setSettings] = useState(() => load('hadiya_settings', initialSettings));
+const normalizeSettings = (raw = {}) => ({
+  ...initialSettings,
+  ...raw,
+  storeName: !raw.storeName || raw.storeName === 'هدية للعبايات' ? 'سعودي' : raw.storeName,
+  address: !raw.address || raw.address === 'القاهرة، مصر' ? 'بورسعيد' : raw.address,
+  facebook: !raw.facebook ? 'https://www.facebook.com/saudi.pts/' : raw.facebook,
+  metaTitle: !raw.metaTitle || raw.metaTitle.includes('هدية للعبايات')
+    ? 'سعودي — أفخر العبايات والأزياء المحتشمة'
+    : raw.metaTitle,
+});
 
-  useEffect(() => { localStorage.setItem('hadiya_orders', JSON.stringify(orders)); }, [orders]);
-  useEffect(() => { localStorage.setItem('hadiya_categories', JSON.stringify(categories)); }, [categories]);
-  useEffect(() => { localStorage.setItem('hadiya_coupons', JSON.stringify(coupons)); }, [coupons]);
-  useEffect(() => { localStorage.setItem('hadiya_settings', JSON.stringify(settings)); }, [settings]);
+const normalizeCategories = (raw) => {
+  const list = Array.isArray(raw) ? raw : [];
+  return list.map((c, idx) => {
+    if (!c || typeof c !== 'object') return c;
+    const fixedId = c.id === 'abaya' ? 'abayas' : c.id;
+    return { ...c, id: fixedId, order: Number(c.order || (idx + 1)) };
+  });
+};
+
+const normalizeIncomingOrder = (raw) => {
+  if (!raw || typeof raw !== 'object') return null;
+
+  // Shape A (AdminDataContext): { id, date, status, customer:{name,phone,governorate,address}, items:[{name,size,color{...},qty,price}], subtotal, discount, shippingCost, total, payment:{...} }
+  if (raw.id && Array.isArray(raw.items)) {
+    return {
+      ...raw,
+      status: raw.status || 'new',
+      date: raw.date || new Date().toISOString().split('T')[0],
+      customer: {
+        name: raw.customer?.name || '',
+        phone: raw.customer?.phone || '',
+        email: raw.customer?.email || '',
+        governorate: raw.customer?.governorate || raw.customer?.city || '',
+        address: raw.customer?.address || '',
+      },
+      items: raw.items.map((it) => ({
+        name: it?.name || '',
+        size: it?.size || '',
+        color: typeof it?.color === 'string' ? { name: it.color, hex: '#888888' } : (it?.color || null),
+        qty: Number(it?.qty || 1),
+        price: Number(it?.price || 0),
+      })),
+      subtotal: Number(raw.subtotal ?? raw.totalAmount ?? 0),
+      discount: Number(raw.discount ?? 0),
+      shippingCost: Number(raw.shippingCost ?? 0),
+      total: Number(raw.total ?? raw.totalAmount ?? 0),
+      payment: raw.payment || { method: 'cash', status: 'pending', ref: '' },
+      timeline: Array.isArray(raw.timeline) ? raw.timeline : [{ status: raw.status || 'new', label: 'تم إنشاء الطلب', date: new Date().toISOString() }],
+    };
+  }
+
+  // Shape B (old Checkout): { orderId, customer:{fullName,phone,city,address,notes}, cartItems:[...], totalAmount, paymentMethod, receiptPreview, date }
+  if (raw.orderId && Array.isArray(raw.cartItems)) {
+    const items = raw.cartItems.map((it) => ({
+      name: it?.name || '',
+      size: it?.size || '',
+      color: it?.color ? { name: it.color, hex: '#888888' } : null,
+      qty: Number(it?.quantity || 1),
+      price: Number(it?.price || 0),
+    }));
+    const subtotal = items.reduce((s, it) => s + it.price * it.qty, 0);
+    const total = Number(raw.totalAmount ?? subtotal);
+    const shippingCost = Math.max(0, total - subtotal); // best-effort (legacy)
+
+    return {
+      id: raw.orderId,
+      date: raw.date ? String(raw.date).slice(0, 10) : new Date().toISOString().split('T')[0],
+      status: 'new',
+      customer: {
+        name: raw.customer?.fullName || '',
+        phone: raw.customer?.phone || '',
+        email: raw.customer?.email || '',
+        governorate: raw.customer?.city || '',
+        address: raw.customer?.address || '',
+      },
+      items,
+      subtotal,
+      discount: 0,
+      shippingCost,
+      total,
+      payment: {
+        method: raw.paymentMethod?.includes('فودافون') ? 'vodafone' : 'cash',
+        status: 'pending',
+        ref: '',
+      },
+      paymentReceipt: raw.receiptPreview || null,
+      notes: raw.customer?.notes || '',
+      timeline: [{ status: 'new', label: 'تم إنشاء الطلب', date: new Date().toISOString() }],
+    };
+  }
+
+  return null;
+};
+
+const loadOrders = () => {
+  const primary = load(STORAGE_KEYS.orders, null);
+  if (Array.isArray(primary) && primary.length) {
+    return primary.map(normalizeIncomingOrder).filter(Boolean);
+  }
+
+  // fallback: legacy key from older checkout page
+  const legacy = load('saudi_orders', null);
+  if (Array.isArray(legacy) && legacy.length) {
+    return legacy.map(normalizeIncomingOrder).filter(Boolean);
+  }
+
+  return initialOrders.map(normalizeIncomingOrder).filter(Boolean);
+};
+
+export const AdminDataProvider = ({ children }) => {
+  const [orders, setOrders] = useState(() => loadOrders());
+  const [categories, setCategories] = useState(() => normalizeCategories(load(STORAGE_KEYS.categories, initialCategories)));
+  const [coupons, setCoupons] = useState(() => load(STORAGE_KEYS.coupons, initialCoupons));
+  const [settings, setSettings] = useState(() => normalizeSettings(load(STORAGE_KEYS.settings, initialSettings)));
+
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.orders, JSON.stringify(orders)); }, [orders]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.categories, JSON.stringify(normalizeCategories(categories))); }, [categories]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.coupons, JSON.stringify(coupons)); }, [coupons]);
+  useEffect(() => { localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(settings)); }, [settings]);
+
+  // Sync across tabs/windows (storage event fires in OTHER tabs)
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (!e.key) return;
+      if (e.key === STORAGE_KEYS.orders) {
+        setOrders(loadOrders());
+      }
+      if (e.key === STORAGE_KEYS.categories) {
+        setCategories(normalizeCategories(load(STORAGE_KEYS.categories, initialCategories)));
+      }
+      if (e.key === STORAGE_KEYS.coupons) {
+        setCoupons(load(STORAGE_KEYS.coupons, initialCoupons));
+      }
+      if (e.key === STORAGE_KEYS.settings) {
+        setSettings(normalizeSettings(load(STORAGE_KEYS.settings, initialSettings)));
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   // ── Orders ────────────────────────────────────────────────────────────────
   const addOrder = (order) => {
-    const newOrder = { ...order, id: `HD-${Date.now()}`, date: new Date().toISOString().split('T')[0], timeline: [{ status: 'new', label: 'تم إنشاء الطلب', date: new Date().toISOString() }] };
+    const base = normalizeIncomingOrder(order) || {};
+    const newOrder = {
+      ...base,
+      id: base.id || `HD-${Date.now()}`,
+      date: base.date || new Date().toISOString().split('T')[0],
+      status: base.status || 'new',
+      timeline: base.timeline || [{ status: 'new', label: 'تم إنشاء الطلب', date: new Date().toISOString() }],
+    };
     setOrders(prev => [newOrder, ...prev]);
   };
 
@@ -195,7 +334,7 @@ export const AdminDataProvider = ({ children }) => {
   const deleteCoupon = (id) => setCoupons(prev => prev.filter(c => c.id !== id));
 
   // ── Settings ──────────────────────────────────────────────────────────────
-  const updateSettings = (fields) => setSettings(prev => ({ ...prev, ...fields }));
+  const updateSettings = (fields) => setSettings(prev => normalizeSettings({ ...prev, ...fields }));
 
   // ── Computed stats ────────────────────────────────────────────────────────
   const stats = React.useMemo(() => {

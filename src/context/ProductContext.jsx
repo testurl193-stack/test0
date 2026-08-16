@@ -3,10 +3,12 @@ import { initialProducts } from '../data/products';
 
 const ProductContext = createContext();
 
+const PRODUCTS_KEY = 'saudi_products';
+
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState(() => {
     try {
-      const saved = localStorage.getItem('hadiya_products');
+      const saved = localStorage.getItem(PRODUCTS_KEY);
       return saved ? JSON.parse(saved) : initialProducts;
     } catch {
       return initialProducts;
@@ -14,14 +16,29 @@ export const ProductProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    localStorage.setItem('hadiya_products', JSON.stringify(products));
+    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
   }, [products]);
+
+  // Sync products across tabs/windows
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key !== PRODUCTS_KEY) return;
+      try {
+        const saved = localStorage.getItem(PRODUCTS_KEY);
+        if (saved) setProducts(JSON.parse(saved));
+      } catch {
+        // ignore
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   // returns only products whose category is visible
   // (filters out products from hidden categories)
   const getVisibleProducts = () => {
     try {
-      const cats = JSON.parse(localStorage.getItem('hadiya_categories') || '[]');
+      const cats = JSON.parse(localStorage.getItem('saudi_categories') || '[]');
       if (!cats.length) return products;
       const hiddenIds = new Set(cats.filter(c => c.visible === false).map(c => c.id));
       if (!hiddenIds.size) return products;

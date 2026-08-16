@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAdminData } from '../context/AdminDataContext';
 import { useToast } from '../context/ToastContext';
 
 export const CheckoutPage = () => {
   const { cart, getTotalPrice, clearCart } = useCart();
+  const { addOrder, settings } = useAdminData();
   const { showToast } = useToast();
   const navigate = useNavigate();
 
   const totalPrice = getTotalPrice();
+  const freeEnabled = !!settings?.freeShippingEnabled;
+  const minFree = Number(settings?.minOrderFree || 0);
+  const defaultShipping = Number(settings?.defaultShipping || 0);
+  const shippingCost = freeEnabled && totalPrice >= minFree ? 0 : defaultShipping;
+  const grandTotal = totalPrice + shippingCost;
 
   // Form State
   const [paymentMethod, setPaymentMethod] = useState('vodafone'); // 'vodafone' or 'cod'
@@ -100,22 +107,86 @@ export const CheckoutPage = () => {
       return;
     }
 
-    // Generate Random Order ID
-    const orderId = 'SAUDI-' + Math.floor(100000 + Math.random() * 900000);
+    // Generate Order ID
+    const orderId = 'SAUDI-' + Date.now().toString().slice(-6);
+
+    const normPhone = (v) => (v || '').toString().replace(/\s+/g, '');
+
+    const colorToHex = (name) => {
+      const n = (name || '').trim();
+      const map = {
+        'أسود': '#000000',
+        'ابيض': '#FFFFFF',
+        'أبيض': '#FFFFFF',
+        'بني': '#8B4513',
+        'بيج': '#D4B896',
+        'كحلي': '#1B2A5E',
+        'رمادي': '#808080',
+        'وردي': '#F4A0B0',
+        'أزرق': '#3B7DD8',
+        'اخضر': '#2D8A4E',
+        'أخضر': '#2D8A4E',
+        'أحمر': '#C0392B',
+        'ذهبي': '#C9A84C',
+        'برتقالي': '#E07B39',
+        'ليلاك': '#C8A2C8',
+        'أوف وايت': '#F8F8F0',
+      };
+      return map[n] || '#888888';
+    };
+
+    const subtotal = totalPrice;
+    const shippingCostForOrder = shippingCost;
+    const discount = 0;
+    const total = subtotal - discount + shippingCostForOrder;
+
+    // Build order in admin-compatible shape
+    const adminOrder = {
+      id: orderId,
+      status: 'new',
+      customer: {
+        name: formData.fullName,
+        phone: normPhone(formData.phone),
+        email: '',
+        governorate: formData.city,
+        address: formData.address,
+      },
+      items: cart.map((it) => ({
+        name: it.name,
+        size: it.size,
+        color: it.color ? { name: it.color, hex: colorToHex(it.color) } : null,
+        qty: it.quantity,
+        price: it.price,
+      })),
+      subtotal,
+      discount,
+      shippingCost: shippingCostForOrder,
+      total,
+      payment: {
+        method: paymentMethod === 'vodafone' ? 'vodafone' : 'cash',
+        status: paymentMethod === 'vodafone' ? 'pending' : 'pending',
+        ref: '',
+      },
+      paymentReceipt: receiptPreview || null,
+      notes: formData.notes || '',
+    };
 
     const orderData = {
       orderId,
       customer: formData,
       paymentMethod: paymentMethod === 'vodafone' ? 'فودافون كاش' : 'الدفع عند الاستلام',
       cartItems: [...cart],
-      totalAmount: totalPrice,
+      totalAmount: total,
+      subtotal,
+      shippingCost,
+      discount,
       receiptPreview: receiptPreview,
       date: new Date().toLocaleString('ar-EG')
     };
 
-    // Save order in localStorage for history & Admin Page
-    const existingOrders = JSON.parse(localStorage.getItem('saudi_orders') || '[]');
-    localStorage.setItem('saudi_orders', JSON.stringify([orderData, ...existingOrders]));
+    // Save order in Admin store (saudi_orders) so it يظهر فوراً في لوحة التحكم + الإحصائيات
+    addOrder(adminOrder);
+    showToast('تم إرسال الطلب بنجاح');
 
     // Clear Cart
     clearCart();
@@ -443,12 +514,14 @@ export const CheckoutPage = () => {
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: '#666' }}>
                     <span>مصاريف الشحن والتوصيل:</span>
-                    <span style={{ color: 'var(--color-success)', fontWeight: 700 }}>مجاناً</span>
+                    <span style={{ color: shippingCost === 0 ? 'var(--color-success)' : '#666', fontWeight: 700 }}>
+                      {shippingCost === 0 ? 'مجاناً' : `${shippingCost.toLocaleString('ar-EG')} ج.م`}
+                    </span>
                   </div>
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 900, color: 'var(--color-primary)', borderTop: '2px dashed var(--color-border)', paddingTop: '12px', marginTop: '5px' }}>
                     <span>المبلغ الإجمالي المطلوبة:</span>
-                    <span style={{ color: 'var(--color-secondary)' }}>{totalPrice.toLocaleString('ar-EG')} ج.م</span>
+                    <span style={{ color: 'var(--color-secondary)' }}>{grandTotal.toLocaleString('ar-EG')} ج.م</span>
                   </div>
                 </div>
 

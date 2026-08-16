@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import { useAdminData } from '../context/AdminDataContext';
 
 export const Header = ({ onOpenSearch, onToggleMobileMenu }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const { categories, settings } = useAdminData();
 
   const { getTotalCount, openCart } = useCart();
   const { wishlistItems, openWishlist } = useWishlist();
@@ -27,13 +29,20 @@ export const Header = ({ onOpenSearch, onToggleMobileMenu }) => {
 
   const isActive = (path) => location.pathname === path;
 
+  const visibleCats = [...(categories || [])]
+    .filter(c => c?.visible !== false)
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+  const topCats = visibleCats.slice(0, 3);
+  const storeName = settings?.storeName || 'سعودي';
+
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`} id="header">
       <div className="container header__inner">
         <Link to="/" className="header__brand">
           <span className="header__logo">
-            <img src="/images/logo.png" alt="سعودي" className="header__logo-img" onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} />
-            <span className="header__logo-text" style={{ display: 'none' }}>سعودي</span>
+            <img src={settings?.logoUrl || "/images/logo.png"} alt={settings?.storeName || "سعودي"} className="header__logo-img" onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} />
+            <span className="header__logo-text" style={{ display: 'none' }}>{settings?.storeName || "سعودي"}</span>
           </span>
         </Link>
 
@@ -49,21 +58,16 @@ export const Header = ({ onOpenSearch, onToggleMobileMenu }) => {
                 المتجر
               </Link>
             </li>
-            <li>
-              <Link to="/shop?category=abayas" className={`header__nav-link ${location.search.includes('abayas') ? 'active' : ''}`}>
-                العبايات
-              </Link>
-            </li>
-            <li>
-              <Link to="/shop?category=niqab" className={`header__nav-link ${location.search.includes('niqab') ? 'active' : ''}`}>
-                النقاب
-              </Link>
-            </li>
-            <li>
-              <Link to="/shop?category=khimar" className={`header__nav-link ${location.search.includes('khimar') ? 'active' : ''}`}>
-                الخمار
-              </Link>
-            </li>
+            {topCats.map(cat => (
+              <li key={cat.id}>
+                <Link
+                  to={`/shop?category=${encodeURIComponent(cat.id)}`}
+                  className={`header__nav-link ${location.search.includes(`category=${cat.id}`) ? 'active' : ''}`}
+                >
+                  {cat.name}
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
 

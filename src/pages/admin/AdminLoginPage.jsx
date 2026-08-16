@@ -39,10 +39,10 @@ export const AdminLoginPage = () => {
         {/* Logo */}
         <div style={styles.logoSection}>
           <div style={styles.logo}>
-            <img src="/images/logo.png" alt="سعودي نقاب" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            <img src="/images/WhatsApp Image 2026-08-13 at 3.58.31 AM.jpeg" alt="سعودي" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
           </div>
           <h1 style={styles.title}>لوحة التحكم</h1>
-          <p style={styles.subtitle}>سعودي نقاب</p>
+          <p style={styles.subtitle}>سعودي</p>
         </div>
 
         {/* Form */}
@@ -130,7 +130,7 @@ const styles = {
 
   logoSection: {
     textAlign: 'center',
-    marginBottom: '40px',
+    marginBottom: '36px',
   },
 
   logo: {
@@ -139,22 +139,28 @@ const styles = {
     borderRadius: '50%',
     overflow: 'hidden',
     margin: '0 auto',
-    marginBottom: '16px',
-    background: 'transparent',
+    marginBottom: '12px',
+    background: '#fff',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
   },
 
   title: {
-    fontSize: '1.6rem',
-    fontWeight: 900,
-    margin: '0 0 8px 0',
-    color: '#F0E6D6',
+    fontSize: '1rem',
+    fontWeight: 600,
+    margin: '0 0 6px 0',
+    color: 'rgba(196,168,130,0.6)',
+    letterSpacing: '3px',
+    textTransform: 'uppercase',
+    fontFamily: "'Georgia', serif",
   },
 
   subtitle: {
-    fontSize: '0.85rem',
-    color: 'rgba(196,168,130,0.7)',
+    fontSize: '1.8rem',
+    color: '#F0E6D6',
     margin: 0,
-    fontWeight: 500,
+    fontFamily: "'Georgia', 'Times New Roman', serif",
+    letterSpacing: '6px',
+    fontWeight: 400,
   },
 
   form: {

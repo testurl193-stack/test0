@@ -6,7 +6,7 @@ const WishlistContext = createContext();
 export const WishlistProvider = ({ children }) => {
   const [wishlistItems, setWishlistItems] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('hadiya_wishlist_items')) || [];
+      return JSON.parse(localStorage.getItem('saudi_wishlist_items')) || [];
     } catch {
       return [];
     }
@@ -16,7 +16,7 @@ export const WishlistProvider = ({ children }) => {
   const { showToast } = useToast();
 
   useEffect(() => {
-    localStorage.setItem('hadiya_wishlist_items', JSON.stringify(wishlistItems));
+    localStorage.setItem('saudi_wishlist_items', JSON.stringify(wishlistItems));
   }, [wishlistItems]);
 
   const toggleWishlist = (product) => {

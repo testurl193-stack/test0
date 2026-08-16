@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
+import { useAdminData } from '../context/AdminDataContext';
 import { ProductCard } from '../components/ProductCard';
 
 export const ShopPage = () => {
   const { visibleProducts: products } = useProducts();
+  const { categories } = useAdminData();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const initialCat = searchParams.get('category') || 'all';
@@ -13,6 +15,10 @@ export const ShopPage = () => {
   const [maxPrice, setMaxPrice] = useState(1000);
   const [sortBy, setSortBy] = useState('featured');
   const [isSidebarOpenMobile, setIsSidebarOpenMobile] = useState(false);
+
+  const visibleCats = [...(categories || [])]
+    .filter(c => c?.visible !== false)
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
 
   useEffect(() => {
     const cat = searchParams.get('category');
@@ -113,39 +119,19 @@ export const ShopPage = () => {
                       جميع الأقسام
                     </label>
                   </li>
-                  <li>
-                    <label>
-                      <input
-                        type="checkbox"
-                        className="filter-checkbox"
-                        checked={selectedCategory === 'niqab'}
-                        onChange={() => handleCategoryChange('niqab')}
-                      />{' '}
-                      النقاب
-                    </label>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        type="checkbox"
-                        className="filter-checkbox"
-                        checked={selectedCategory === 'abayas'}
-                        onChange={() => handleCategoryChange('abayas')}
-                      />{' '}
-                      العبايات
-                    </label>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        type="checkbox"
-                        className="filter-checkbox"
-                        checked={selectedCategory === 'khimar'}
-                        onChange={() => handleCategoryChange('khimar')}
-                      />{' '}
-                      الخمار
-                    </label>
-                  </li>
+                  {visibleCats.map((cat) => (
+                    <li key={cat.id}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          className="filter-checkbox"
+                          checked={selectedCategory === cat.id}
+                          onChange={() => handleCategoryChange(cat.id)}
+                        />{' '}
+                        {cat.name}
+                      </label>
+                    </li>
+                  ))}
                 </ul>
               </div>
 

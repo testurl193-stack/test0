@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
+import { useAdminData } from '../context/AdminDataContext';
 import { ProductCard } from '../components/ProductCard';
 
 export const HomePage = () => {
   const { visibleProducts: products } = useProducts();
+  const { categories } = useAdminData();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slidesData = [
@@ -40,6 +42,15 @@ export const HomePage = () => {
     }, 4500);
     return () => clearInterval(timer);
   }, [slidesData.length]);
+
+  const visibleCats = [...(categories || [])]
+    .filter(c => c?.visible !== false)
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+  const pickCategoryImage = (catId) => {
+    const p = products.find(x => x.category === catId);
+    return p?.image || '/images/products/black-niqab.png';
+  };
 
   return (
     <main>
@@ -159,70 +170,23 @@ export const HomePage = () => {
           </div>
 
           <div className="categories__grid">
-            <Link to="/shop?category=niqab" className="category-card">
-              <img src="/images/products/black-niqab.png" alt="النقاب" className="category-card__image" loading="lazy" />
-              <div className="category-card__overlay">
-                <h3 className="category-card__name">قسم النقاب</h3>
-                <span className="category-card__count">8 منتجات</span>
-              </div>
-              <div className="category-card__arrow">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M19 12H5M12 19l-7-7 7-7" />
-                </svg>
-              </div>
-            </Link>
-
-            <Link to="/shop?category=abayas" className="category-card">
-              <img src="/images/products/beige-abaya.png" alt="العبايات" className="category-card__image" loading="lazy" />
-              <div className="category-card__overlay">
-                <h3 className="category-card__name">قسم العبايات</h3>
-                <span className="category-card__count">8 منتجات</span>
-              </div>
-              <div className="category-card__arrow">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M19 12H5M12 19l-7-7 7-7" />
-                </svg>
-              </div>
-            </Link>
-
-            <Link to="/shop?category=khimar" className="category-card">
-              <img src="/images/products/lilac-khimar.png" alt="الخمار" className="category-card__image" loading="lazy" />
-              <div className="category-card__overlay">
-                <h3 className="category-card__name">قسم الخمار</h3>
-                <span className="category-card__count">5 منتجات</span>
-              </div>
-              <div className="category-card__arrow">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M19 12H5M12 19l-7-7 7-7" />
-                </svg>
-              </div>
-            </Link>
-
-            <Link to="/shop?category=abayas" className="category-card">
-              <img src="/images/products/navy-abaya.png" alt="إسدالات الصلاة" className="category-card__image" loading="lazy" />
-              <div className="category-card__overlay">
-                <h3 className="category-card__name">إسدالات الصلاة</h3>
-                <span className="category-card__count">3 منتجات</span>
-              </div>
-              <div className="category-card__arrow">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M19 12H5M12 19l-7-7 7-7" />
-                </svg>
-              </div>
-            </Link>
-
-            <Link to="/shop?category=khimar" className="category-card">
-              <img src="/images/products/brown-khimar.png" alt="مكملات الحجاب" className="category-card__image" loading="lazy" />
-              <div className="category-card__overlay">
-                <h3 className="category-card__name">مكملات الحجاب</h3>
-                <span className="category-card__count">4 منتجات</span>
-              </div>
-              <div className="category-card__arrow">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M19 12H5M12 19l-7-7 7-7" />
-                </svg>
-              </div>
-            </Link>
+            {visibleCats.map((cat) => {
+              const count = products.filter(p => p.category === cat.id).length;
+              return (
+                <Link key={cat.id} to={`/shop?category=${encodeURIComponent(cat.id)}`} className="category-card">
+                  <img src={pickCategoryImage(cat.id)} alt={cat.name} className="category-card__image" loading="lazy" />
+                  <div className="category-card__overlay">
+                    <h3 className="category-card__name">قسم {cat.name}</h3>
+                    <span className="category-card__count">{count} منتجات</span>
+                  </div>
+                  <div className="category-card__arrow">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </section>
 

@@ -230,6 +230,17 @@ const OrderModal = ({ order, onClose, onUpdateStatus, onDelete }) => {
             {order.payment?.ref && <Row label="رقم العملية" value={order.payment.ref} />}
           </Section>
 
+          {/* Payment receipt (Vodafone Cash screenshot) */}
+          {order.paymentReceipt && (
+            <Section title="إيصال الدفع">
+              <img
+                src={order.paymentReceipt}
+                alt="إيصال الدفع"
+                style={{ width: '100%', maxHeight: 260, objectFit: 'contain', borderRadius: 12, border: `1px solid ${C.border}`, background: '#FAF7F4' }}
+              />
+            </Section>
+          )}
+
           {/* Shipping */}
           {(order.shippingInfo?.company || order.shippingInfo?.trackingNo) && (
             <Section title="الشحن">

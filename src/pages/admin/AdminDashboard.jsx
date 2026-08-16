@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAdmin } from '../../context/AdminContext';
 import { DashboardOverview } from './components/DashboardOverview';
@@ -91,11 +91,23 @@ const NavItem = ({ item, active, onClick }) => {
   );
 };
 
+const PAGE_BG = 'linear-gradient(135deg, #F5F0EB 0%, #EDE8E2 25%, #E8E0D6 50%, #EAE4DC 75%, #F0EBE4 100%)';
+const PAGE_BG_FALLBACK = '#F0EBE4';
+
 export const AdminDashboard = () => {
   const { isAuthenticated, isLoading, logout } = useAdmin();
   const navigate = useNavigate();
   const [tab, setTab] = useState('overview');
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.classList.add('admin-dashboard');
+    document.body.classList.add('admin-dashboard');
+    return () => {
+      document.documentElement.classList.remove('admin-dashboard');
+      document.body.classList.remove('admin-dashboard');
+    };
+  }, []);
 
   const changeTab = useCallback((key) => {
     setTab(key);
@@ -123,11 +135,11 @@ export const AdminDashboard = () => {
 
       {/* Logo */}
       <div style={{ padding: '20px 20px 18px', borderBottom: `1px solid ${C.sidebarBorder}`, display: 'flex', alignItems: 'center', gap: 13, flexShrink: 0 }}>
-        <div style={{ width: 48, height: 48, borderRadius: 12, overflow: 'hidden', flexShrink: 0 }}>
-          <img src="/images/logo.png" alt="سعودي نقاب" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+        <div style={{ width: 48, height: 48, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+          <img src="/images/WhatsApp Image 2026-08-13 at 3.58.31 AM.jpeg" alt="سعودي" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
         <div>
-          <div style={{ fontWeight: 900, fontSize: '1.05rem', color: '#fff', lineHeight: 1.2 }}>سعودي نقاب</div>
+          <div style={{ fontWeight: 400, fontSize: '1.1rem', color: '#F0E6D6', letterSpacing: '3px', fontFamily: "'Georgia', serif" }}>سعودي</div>
           <div style={{ fontSize: '0.68rem', color: C.sidebarText, marginTop: 2 }}>لوحة التحكم</div>
         </div>
       </div>
@@ -161,7 +173,7 @@ export const AdminDashboard = () => {
   );
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'linear-gradient(135deg, #F5F0EB 0%, #EDE8E2 25%, #E8E0D6 50%, #EAE4DC 75%, #F0EBE4 100%)', fontFamily: "'Cairo', sans-serif", direction: 'rtl' }}>
+    <div style={{ display: 'flex', height: '100dvh', minHeight: '100vh', overflow: 'hidden', background: PAGE_BG, fontFamily: "'Cairo', sans-serif", direction: 'rtl' }}>
 
       {/* ── Desktop Sidebar ── */}
       <aside className="admin-sidebar-desktop"
@@ -182,7 +194,7 @@ export const AdminDashboard = () => {
       </aside>
 
       {/* ── Main ── */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, minHeight: 0 }}>
 
         {/* ── Header ── */}
         <header style={{
@@ -205,11 +217,11 @@ export const AdminDashboard = () => {
 
           {/* Mobile: logo + page name */}
           <div className="admin-mobile-logo" style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 9, overflow: 'hidden', flexShrink: 0 }}>
-              <img src="/images/logo.png" alt="سعودي نقاب" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            <div style={{ width: 36, height: 36, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, background: '#fff', boxShadow: '0 2px 6px rgba(0,0,0,0.25)' }}>
+              <img src="/images/WhatsApp Image 2026-08-13 at 3.58.31 AM.jpeg" alt="سعودي" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#F0E6D6', lineHeight: 1.2 }}>سعودي نقاب</div>
+              <div style={{ fontWeight: 400, fontSize: '0.95rem', color: '#F0E6D6', letterSpacing: '2px', fontFamily: "'Georgia', serif" }}>سعودي</div>
               <div style={{ fontSize: '0.65rem', color: 'rgba(196,168,130,0.6)' }}>{TITLES[tab]}</div>
             </div>
           </div>
@@ -230,7 +242,16 @@ export const AdminDashboard = () => {
         </header>
 
         {/* ── Content ── */}
-        <main style={{ flex: 1, padding: '28px 24px', overflowY: 'auto', WebkitOverflowScrolling: 'touch', background: 'transparent' }}>
+        <main style={{
+          flex: 1,
+          minHeight: 0,
+          padding: '28px 24px',
+          paddingBottom: 'calc(28px + env(safe-area-inset-bottom, 12px))',
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'contain',
+          background: PAGE_BG,
+        }}>
           {tab === 'overview'   && <DashboardOverview />}
           {tab === 'orders'     && <OrdersManagement />}
           {tab === 'products'   && <ProductsManagement />}
@@ -243,6 +264,23 @@ export const AdminDashboard = () => {
 
       {/* ── Responsive CSS ── */}
       <style>{`
+        html.admin-dashboard,
+        html.admin-dashboard body {
+          height: 100%;
+          overflow: hidden;
+          overscroll-behavior: none;
+        }
+
+        html.admin-dashboard body {
+          padding-bottom: 0 !important;
+          background: ${PAGE_BG_FALLBACK};
+        }
+
+        html.admin-dashboard #root {
+          height: 100%;
+          min-height: 100dvh;
+        }
+
         .admin-sidebar-desktop { display: flex !important; flex-direction: column; }
         .admin-hamburger        { display: none !important; }
         .admin-sidebar-mobile   { display: none !important; flex-direction: column; }

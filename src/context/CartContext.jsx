@@ -6,7 +6,7 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
     try {
-      const saved = localStorage.getItem('hadiya_cart_items');
+      const saved = localStorage.getItem('saudi_cart_items');
       return saved ? JSON.parse(saved) : [
         {
           id: '1',
@@ -36,7 +36,7 @@ export const CartProvider = ({ children }) => {
   const { showToast } = useToast();
 
   useEffect(() => {
-    localStorage.setItem('hadiya_cart_items', JSON.stringify(cart));
+    localStorage.setItem('saudi_cart_items', JSON.stringify(cart));
   }, [cart]);
 
   const addToCart = (product) => {
